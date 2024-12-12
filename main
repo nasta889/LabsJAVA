@@ -1,0 +1,86 @@
+import java.util.List;
+import java.util.Scanner;
+
+import static java.lang.System.in;
+import static java.lang.System.out;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(in);
+
+        // Оголошення товарів і категорій
+        Category electronics = new Category("Електроніка");
+        Category clothing = new Category("Одяг");
+
+        Product product1 = new Product(1, "Телефон", 100.0, "Опис телефону", electronics);
+        Product product2 = new Product(2, "Футболка", 20.0, "Опис футболки", clothing);
+        Product product3 = new Product(3, "Ноутбук", 800.0, "Опис ноутбука", electronics);
+
+        Cart cart = new Cart();
+        UserHistory userHistory = new UserHistory();
+
+        while (true) {
+            out.println("\nВиберіть опцію:");
+            out.println("1 - Переглянути список товарів");
+            out.println("2 - Додати товар до кошика");
+            out.println("3 - Видалити товар з кошика");
+            out.println("4 - Переглянути кошик");
+            out.println("5 - Оформити замовлення");
+            out.println("6 - Переглянути історію замовлень");
+            out.println("7 - Пошук товару за назвою");
+            out.println("8 - Пошук товару за категорією");
+            out.println("0 - Вийти");
+
+            int choice = scanner.nextInt();
+            switch (choice) {
+                case 1:
+                    out.println(product1);
+                    out.println(product2);
+                    out.println(product3);
+                    break;
+                case 2:
+                    out.println("Введіть ID товару для додавання до кошика:");
+                    int id = scanner.nextInt();
+                    if (id == 1) cart.addProduct(product1);
+                    else if (id == 2) cart.addProduct(product2);
+                    else if (id == 3) cart.addProduct(product3);
+                    else out.println("Товар з таким ID не знайдено");
+                    break;
+                case 3:
+                    out.println("Введіть ID товару для видалення з кошика:");
+                    int removeId = scanner.nextInt();
+                    cart.removeProduct(removeId);
+                    break;
+                case 4:
+                    out.println(cart);
+                    break;
+                case 5:
+                    Order order = new Order(cart);
+                    userHistory.addOrder(order);
+                    out.println("Замовлення оформлено!");
+                    cart = new Cart(); // Очищення кошика після оформлення замовлення
+                    break;
+                case 6:
+                    userHistory.showOrderHistory();
+                    break;
+                case 7:
+                    out.println("Введіть назву товару для пошуку:");
+                    String name = scanner.next();
+                    SearchUtil.searchByName(List.of(product1, product2, product3), name);
+                    break;
+                case 8:
+                    out.println("Введіть назву категорії для пошуку:");
+                    String categoryName = scanner.next();
+                    Category searchCategory = new Category(categoryName);
+                    SearchUtil.searchByCategory(List.of(product1, product2, product3), searchCategory);
+                    break;
+                case 0:
+                    out.println("Дякуємо, що використовували наш магазин!");
+                    return;
+                default:
+                    out.println("Невідома опція. Спробуйте ще раз.");
+                    break;
+            }
+        }
+    }
+}
